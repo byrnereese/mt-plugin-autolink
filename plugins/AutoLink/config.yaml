@@ -1,0 +1,49 @@
+name: AutoLink
+id: AutoLink
+key: AutoLink
+author_link: http://www.majordojo.com/
+author_name: Byrne Reese
+description: Allows admins to define a list of words and phrases that this plugin will automatically link to designated URLs
+schema_version: 7
+version: 0.92
+plugin_link: http://www.majordojo.com/projects/quicklink.php
+
+applications:
+    cms:
+        methods:
+            autolink_list: $AutoLink::AutoLink::CMS::list_rules
+            autolink_edit: $AutoLink::AutoLink::CMS::edit
+            autolink_save: $AutoLink::AutoLink::CMS::save
+            itemset_delete_rules: $AutoLink::AutoLink::CMS::itemset_delete_rules
+            itemset_enable_rules: $AutoLink::AutoLink::CMS::itemset_enable_rules
+            itemset_disable_rules: $AutoLink::AutoLink::CMS::itemset_disable_rules
+        menus:
+            manage:autolinkrules:
+                label: AutoLink Rules
+                order: 9000
+                mode: autolink_list
+                view: blog
+
+list_actions:
+    autolinkrules:
+        delete:
+            label: Delete
+            order: 100
+            js:    finishPluginActionAll
+            code:  $AutoLink::AutoLink::Plugin::itemset_delete_rules
+            continue_prompt: 'Are you sure you want to delete the selected rules?'
+
+text_filters:
+    quicklink: 
+        label: QuickLink
+        code: $AutoLink::AutoLink::Plugin::quicklink_filter
+
+callbacks:
+    MT::Entry::pre_save: $AutoLink::AutoLink::Plugin::pre_save_filter
+    MT::Entry::post_load: $AutoLink::AutoLink::Plugin::post_load_filter
+    MT::Page::pre_save: $AutoLink::AutoLink::Plugin::pre_save_filter
+    MT::Page::post_load: $AutoLink::AutoLink::Plugin::post_load_filter
+    cms_pre_preview: $AutoLink::AutoLink::Plugin::pre_preview_filter
+
+object_types:
+    autolink.rule: AutoLink::Rule
