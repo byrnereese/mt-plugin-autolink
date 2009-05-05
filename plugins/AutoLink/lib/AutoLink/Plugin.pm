@@ -99,6 +99,8 @@ sub pre_preview_filter {
 
 sub quicklink_filter {
     my ($str, $ctx) = @_;
+    return unless $ctx;
+
     require AutoLink::Rule;
     my $blog_id = $ctx->var('blog_id');
     my $blog = $ctx->stash('blog');

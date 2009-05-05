@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME            => 'AutoLink',
-    VERSION         => '0.92',
+    VERSION         => '0.93',
     DISTNAME        => 'AutoLink',
 );
 
