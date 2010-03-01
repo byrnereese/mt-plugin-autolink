@@ -9,13 +9,14 @@ use base qw( MT::Object );
 __PACKAGE__->install_properties({
     column_defs => {
         'id'          => 'integer not null auto_increment',
-	'blog_id'     => 'integer',
+        'blog_id'     => 'integer',
         'label'       => 'string(100) not null',
         'pattern'     => 'string(255) not null',
         'regex'       => 'smallint not null',
         'global'      => 'smallint not null',
         'disabled'    => 'smallint not null',
         'case_insensitive' => 'smallint not null',
+        'new_window' => 'smallint not null',
         'destination' => 'string(255) not null',
     },
     audit => 1,

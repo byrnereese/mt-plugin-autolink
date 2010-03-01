@@ -20,19 +20,22 @@ sub remove_autolink_tags {
 sub add_links {
     my ($text,$rules) = @_;
     foreach my $rule (@$rules) {
-	my $href      = $rule->destination;
-	my $pattern   = $rule->pattern;
+        my $href      = $rule->destination;
+        my $pattern   = $rule->pattern;
+        my $target    = '';
 
-	my $options = "";
-	$options .= "g" if $rule->global;
-	$options .= "i" if $rule->case_insensitive;
+        $target = ' target="_new" ' if $rule->new_window;
 
-	my $cmd = "";
-	# TODO - the text that is linked to needs to be tokenized and links added at the end
+        my $options = "";
+        $options .= "g" if $rule->global;
+        $options .= "i" if $rule->case_insensitive;
+        
+        my $cmd = "";
+        # TODO - the text that is linked to needs to be tokenized and links added at the end
         if ($rule->regex) {
-          $cmd = '$text =~ s!('.$pattern.')!<a class="autolink" href="'.$href.'">$1</a>!'.$options;
+            $cmd = '$text =~ s!('.$pattern.')!<a class="autolink" href="'.$href.'" $target>$1</a>!'.$options;
         } else {
-          $cmd = '$text =~ s!\b('.$pattern.')\b!<a class="autolink" href="'.$href.'">$1</a>!'.$options;
+            $cmd = '$text =~ s!\b('.$pattern.')\b!<a class="autolink" href="'.$href.'" $target>$1</a>!'.$options;
         }
         eval $cmd;
     }
@@ -48,7 +51,7 @@ sub process_text {
 
     # Extract existing links from text
     while ($text =~ s/(<a [^\>]*\>.*?<\/a>)/"\${token-".++$count."}"/emi) {
-	$tokens{"token-$count"} = $1;
+        $tokens{"token-$count"} = $1;
     }
 
 #    This should no longer be necessary as quicklink will be processed AFTER 
@@ -72,13 +75,12 @@ sub process_text {
 sub post_load_filter {
     my ($en, $obj) = @_;
     # Break out if we are rebuilding
-    require MT::App;
     my $app = MT::App->instance;
     my $ref = ref $app;
     if ($ref eq "MT::App::CMS" && $app && $app->mode eq 'view') {
-	my $fltr = $obj->convert_breaks;
-	$fltr =~ s/,quicklink//;
-	$obj->convert_breaks($fltr);
+        my $fltr = $obj->convert_breaks;
+        $fltr =~ s/,quicklink//;
+        $obj->convert_breaks($fltr);
     }
 }
 
@@ -101,13 +103,12 @@ sub quicklink_filter {
     my ($str, $ctx) = @_;
     return unless $ctx;
 
-    require AutoLink::Rule;
     my $blog_id = $ctx->var('blog_id');
     my $blog = $ctx->stash('blog');
     if (!$blog && $blog_id) {
         $blog = MT->model('blog')->load($blog_id);
     }
-    my @rules = AutoLink::Rule->load({ blog_id => $blog->id });
+    my @rules = MT->model('autolink.rule')->load({ blog_id => $blog->id });
     my $newstr = process_text($str,\@rules);
 
     my $app = MT::App->instance;
