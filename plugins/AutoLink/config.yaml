@@ -5,7 +5,7 @@ author_link: http://www.majordojo.com/
 author_name: Byrne Reese
 description: Allows admins to define a list of words and phrases that this plugin will automatically link to designated URLs
 schema_version: 8
-version: 0.95
+version: 0.9.6
 plugin_link: http://www.majordojo.com/projects/movable-type/autolink/
 
 applications:
