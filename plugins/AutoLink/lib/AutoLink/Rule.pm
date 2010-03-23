@@ -21,7 +21,6 @@ __PACKAGE__->install_properties({
     },
     audit => 1,
     indexes => {
-        id => 1,
         pattern => 1,
     },
     datasource => 'autolink_rules',
